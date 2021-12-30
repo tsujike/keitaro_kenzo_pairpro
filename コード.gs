@@ -12,7 +12,7 @@ function myFunction() {
     const id = file.getId();
     const size = '';
     const date = '';
-    fileArray.push([name, id, size, date]);
+    fileArray.push([id, name, size, date]);
   }
 
   // console.log(fileArray); //	[ '20200206_093839_Services',  '1iq9H_2SNcB0egbytSkhHy9y7dGXTfrC0' ]
@@ -21,12 +21,32 @@ function myFunction() {
   const ss = SpreadsheetApp.openById('1klGkAcbet6NM66Q1L-bprHxmjtKz1KUQ3ooEF-wGdbk');
   const sheet = ss.getActiveSheet();
   sheet.getRange(2, 1, fileArray.length, fileArray[0].length).setValues(fileArray);
-  // console.log(sheet.getName());
 
-  // const file1 = files.next();
-  // console.log(file1.getName());
 
-  // const rename1 = file1.setName('hoge.pdf');
-  // console.log(rename1.getName());
 
 }
+
+function reName() {
+
+  const ss = SpreadsheetApp.openById('1klGkAcbet6NM66Q1L-bprHxmjtKz1KUQ3ooEF-wGdbk');
+  const sheet = ss.getActiveSheet();
+  const records = sheet.getDataRange().getValues(); //[[id,ファイル名,容量,読取り日,rename],[],[]]
+  const renameArray = records.map(record => record[4]);
+  renameArray.shift();
+  // console.log(renameArray); //[ 'ファイル名_20211231.pdf','ファイル名_20211231.pdf','ファイル名_20211231.pdf',
+
+  const folder = DriveApp.getFolderById('1-0CaujNc2k6ZEH34uwEDHHPB8Gw703pR');
+
+  const files = folder.getFilesByType(MimeType.PDF);
+
+  let i = 0;
+  while (files.hasNext()) {
+    const file = files.next();
+    const rename = renameArray[i];
+    file.setName(rename);
+    i++;
+  }
+
+
+}
+
